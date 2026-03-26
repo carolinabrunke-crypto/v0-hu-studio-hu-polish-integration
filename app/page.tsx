@@ -1,21 +1,21 @@
 "use client"
 
 import { useState } from "react"
-import { ChevronRight, ChevronLeft } from "lucide-react"
+import { Sparkles, Globe, ChevronRight, ChevronLeft } from "lucide-react"
 
 const slides = [
-  { id: "cover", phase: null, flowStep: null },
-  { id: "problem", phase: "01", flowStep: 0 },
-  { id: "solution", phase: "02", flowStep: 1 },
-  { id: "how", phase: "03", flowStep: 2 },
-  { id: "team", phase: "04", flowStep: 3 },
+  { id: "cover", phase: null, title: null },
+  { id: "problem", phase: "01", title: "PROBLEMA" },
+  { id: "solution", phase: "02", title: "SOLUCIÓN" },
+  { id: "flow", phase: "03", title: "FLUJO" },
+  { id: "team", phase: "04", title: "EQUIPO" },
 ]
 
-const flowSteps = [
-  { num: "01", label: "Problema" },
-  { num: "02", label: "Solución" },
-  { num: "03", label: "Flujo" },
-  { num: "04", label: "Equipo" },
+const navSteps = [
+  { num: "01", label: "PROBLEMA" },
+  { num: "02", label: "SOLUCIÓN" },
+  { num: "03", label: "FLUJO" },
+  { num: "04", label: "EQUIPO" },
 ]
 
 export default function Presentation() {
@@ -34,64 +34,125 @@ export default function Presentation() {
   }
 
   const currentPhase = slides[currentSlide].phase
-  const currentFlowStep = slides[currentSlide].flowStep
 
   return (
-    <main className="min-h-screen bg-background text-foreground flex flex-col font-sans">
+    <main className="min-h-screen bg-background text-foreground flex flex-col font-sans relative overflow-hidden">
+      {/* Decorative elements */}
+      <div className="absolute left-0 top-1/3 w-64 h-64 pointer-events-none">
+        <svg viewBox="0 0 200 200" className="w-full h-full text-muted-foreground/20">
+          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
+          <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="1" />
+        </svg>
+      </div>
+      <div className="absolute right-0 bottom-1/4 w-48 h-48 pointer-events-none opacity-30">
+        <svg viewBox="0 0 200 200" className="w-full h-full text-primary/30">
+          <path d="M100,20 Q180,100 100,180 Q20,100 100,20" fill="none" stroke="currentColor" strokeWidth="1" />
+        </svg>
+      </div>
+
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-6 flex items-center justify-between">
-        <div className="text-sm text-muted-foreground tracking-wide">hustudio</div>
-        {currentPhase && (
-          <div className="text-9xl font-extralight text-muted-foreground/10 fixed top-4 left-6 md:left-12 select-none pointer-events-none">
-            {currentPhase}
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex items-center justify-between bg-background/80 backdrop-blur-sm">
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
+            <div className="grid grid-cols-2 gap-0.5">
+              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
+              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
+              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
+              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
+            </div>
           </div>
+          <span className="text-lg font-medium tracking-tight">
+            hu<span className="text-primary">studio</span>
+          </span>
+        </div>
+
+        {/* Navigation Steps */}
+        {currentSlide > 0 && (
+          <nav className="hidden md:flex items-center gap-0">
+            {navSteps.map((step, index) => {
+              const isActive = currentPhase === step.num
+              const isPast = currentPhase && parseInt(currentPhase) > parseInt(step.num)
+              const isLast = index === navSteps.length - 1
+
+              return (
+                <div key={step.num} className="flex items-center">
+                  <button
+                    onClick={() => setCurrentSlide(index + 1)}
+                    className={`flex flex-col items-center gap-1 px-3 transition-all ${
+                      isActive ? "opacity-100" : "opacity-50 hover:opacity-75"
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
+                        isActive
+                          ? "bg-primary text-primary-foreground"
+                          : isPast
+                          ? "bg-primary/20 text-primary"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {step.num}
+                    </div>
+                    <span className="text-[10px] tracking-wider text-muted-foreground">{step.label}</span>
+                  </button>
+                  {!isLast && (
+                    <div className={`w-8 h-px ${isPast || isActive ? "bg-primary/40" : "bg-border"}`} />
+                  )}
+                </div>
+              )
+            })}
+          </nav>
         )}
+
+        {/* Status */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-green-500" />
+            <span className="text-sm text-muted-foreground">Activo</span>
+          </div>
+          <span className="text-sm text-muted-foreground">by HUMAND</span>
+        </div>
       </header>
 
       {/* Slide Content */}
-      <div className="flex-1 flex items-center px-6 md:px-12 lg:px-24 py-32">
+      <div className="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20">
         {currentSlide === 0 && <CoverSlide onNext={nextSlide} />}
         {currentSlide === 1 && <ProblemSlide />}
         {currentSlide === 2 && <SolutionSlide />}
-        {currentSlide === 3 && <HowItWorksSlide />}
+        {currentSlide === 3 && <FlowSlide />}
         {currentSlide === 4 && <TeamSlide />}
       </div>
 
       {/* Footer Navigation */}
-      <footer className="fixed bottom-0 left-0 right-0 px-6 md:px-12 py-6 flex items-center justify-between border-t border-border bg-background/80 backdrop-blur-sm">
+      <footer className="fixed bottom-0 left-0 right-0 px-6 md:px-12 py-4 flex items-center justify-between bg-background/80 backdrop-blur-sm">
         <button
           onClick={prevSlide}
           disabled={currentSlide === 0}
-          className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-0 disabled:cursor-default"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-0"
         >
           <ChevronLeft className="w-4 h-4" />
+          <span className="hidden md:inline">Anterior</span>
         </button>
 
-        {/* Flow Progress */}
-        <div className="flex items-center gap-1 md:gap-3">
-          {flowSteps.map((step, index) => (
+        <div className="flex items-center gap-2">
+          {slides.map((_, index) => (
             <button
-              key={step.num}
-              onClick={() => setCurrentSlide(index + 1)}
-              className={`flex items-center gap-1 md:gap-2 px-2 md:px-3 py-1.5 rounded transition-all ${
-                currentFlowStep === index
-                  ? "text-foreground"
-                  : "text-muted-foreground/50 hover:text-muted-foreground"
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-2 h-2 rounded-full transition-all ${
+                currentSlide === index ? "bg-primary w-6" : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
               }`}
-            >
-              <span className={`text-xs font-mono ${currentFlowStep === index ? "text-accent" : ""}`}>
-                {step.num}
-              </span>
-              <span className="text-xs hidden md:inline">{step.label}</span>
-            </button>
+            />
           ))}
         </div>
 
         <button
           onClick={nextSlide}
           disabled={currentSlide === slides.length - 1}
-          className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30"
         >
+          <span className="hidden md:inline">Siguiente</span>
           <ChevronRight className="w-4 h-4" />
         </button>
       </footer>
@@ -99,27 +160,35 @@ export default function Presentation() {
   )
 }
 
+function PhaseBadge({ phase, title }: { phase: string; title: string }) {
+  return (
+    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+      <Sparkles className="w-4 h-4" />
+      <span>FASE {phase} - {title}</span>
+    </div>
+  )
+}
+
 function CoverSlide({ onNext }: { onNext: () => void }) {
   return (
-    <div className="w-full max-w-4xl">
-      <div className="mb-6">
-        <span className="text-xs text-muted-foreground tracking-widest uppercase">
-          by humand
+    <div className="w-full max-w-4xl text-center">
+      <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-6 text-balance">
+        De brief a{" "}
+        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+          campaña global
         </span>
-      </div>
-      <h1 className="text-5xl md:text-7xl lg:text-8xl font-extralight tracking-tight mb-8 text-balance">
-        hustudio
+        <br />
+        en minutos.
       </h1>
-      <p className="text-lg md:text-xl text-muted-foreground font-light max-w-xl leading-relaxed text-balance">
-        Ecosistema autónomo de producción audiovisual. 
-        De un brief a campañas globales con IA.
+      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10 text-balance">
+        Ecosistema autónomo de producción audiovisual con IA. Automatiza pre-producción, control de calidad y localización.
       </p>
       <button
         onClick={onNext}
-        className="mt-12 flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
       >
-        <span>Comenzar</span>
-        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+        <span>Ver presentación</span>
+        <ChevronRight className="w-4 h-4" />
       </button>
     </div>
   )
@@ -127,44 +196,39 @@ function CoverSlide({ onNext }: { onNext: () => void }) {
 
 function ProblemSlide() {
   return (
-    <div className="w-full max-w-4xl">
-      <div className="mb-10">
-        <span className="text-xs text-accent font-mono tracking-wider">Fase 01 · El problema</span>
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mt-3 text-balance leading-tight">
-          El proceso manual<br />
-          <span className="text-muted-foreground">consume al equipo.</span>
-        </h2>
-      </div>
+    <div className="w-full max-w-4xl text-center">
+      <PhaseBadge phase="01" title="EL PROBLEMA" />
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+        El proceso manual{" "}
+        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+          consume al equipo.
+        </span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+        Los equipos multimedia pierden semanas en tareas repetitivas que la IA puede automatizar.
+      </p>
 
-      <div className="grid gap-6 md:gap-8">
-        <div className="flex gap-4 md:gap-6">
-          <span className="text-accent font-mono text-sm mt-1">01</span>
-          <div>
-            <h3 className="font-medium mb-1">Pre-producción interminable</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Crear guiones, storyboards y locuciones para cada campaña requiere semanas de trabajo manual repetitivo.
-            </p>
-          </div>
+      <div className="grid md:grid-cols-3 gap-6 text-left">
+        <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">01</div>
+          <h3 className="font-medium mb-2">Pre-producción lenta</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Guiones, storyboards y locuciones requieren semanas de trabajo manual.
+          </p>
         </div>
-
-        <div className="flex gap-4 md:gap-6">
-          <span className="text-accent font-mono text-sm mt-1">02</span>
-          <div>
-            <h3 className="font-medium mb-1">Errores que cuestan caro</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Los errores en motion design se detectan después del render, causando re-trabajos costosos y frustrantes.
-            </p>
-          </div>
+        <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">02</div>
+          <h3 className="font-medium mb-2">Errores costosos</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Errores en motion design detectados post-render causan re-trabajos.
+          </p>
         </div>
-
-        <div className="flex gap-4 md:gap-6">
-          <span className="text-accent font-mono text-sm mt-1">03</span>
-          <div>
-            <h3 className="font-medium mb-1">Escalar es multiplicar esfuerzo</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Adaptar videos a múltiples idiomas y mercados significa repetir todo el proceso una y otra vez.
-            </p>
-          </div>
+        <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">03</div>
+          <h3 className="font-medium mb-2">Escalar es multiplicar</h3>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Adaptar a múltiples idiomas significa repetir todo el proceso.
+          </p>
         </div>
       </div>
     </div>
@@ -173,92 +237,101 @@ function ProblemSlide() {
 
 function SolutionSlide() {
   return (
-    <div className="w-full max-w-4xl">
-      <div className="mb-10">
-        <span className="text-xs text-accent font-mono tracking-wider">Fase 02 · La solución</span>
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mt-3 text-balance leading-tight">
-          Automatización end-to-end<br />
-          <span className="text-muted-foreground">para producción audiovisual.</span>
-        </h2>
-      </div>
+    <div className="w-full max-w-4xl text-center">
+      <PhaseBadge phase="02" title="LA SOLUCIÓN" />
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+        Automatización{" "}
+        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+          end-to-end.
+        </span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+        hustudio combina generación de contenido con IA y control de calidad para motion design.
+      </p>
 
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-        <div className="space-y-8">
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <h3 className="font-medium">Ingesta inteligente</h3>
+      <div className="grid md:grid-cols-2 gap-6 text-left">
+        <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-primary" />
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-3.5">
-              Un PDF o brief se transforma automáticamente en guion técnico, storyboard visual e imágenes alineadas con tu brandbook.
-            </p>
+            <h3 className="font-medium">Generación con IA</h3>
           </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <h3 className="font-medium">Control de calidad con IA</h3>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-3.5">
-              Plugin de After Effects que detecta errores antes y después del render. Sistema de feedback integrado para evitar re-renders.
-            </p>
-          </div>
-
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <h3 className="font-medium">Localización automática</h3>
-            </div>
-            <p className="text-sm text-muted-foreground leading-relaxed pl-3.5">
-              Doblaje de voz y subtitulado en múltiples idiomas. Escala la comunicación de Humand a nivel global.
-            </p>
-          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            De un PDF a guion, storyboard, imágenes y locución alineados con tu brandbook. Automáticamente.
+          </p>
         </div>
-
-        <div className="flex items-center justify-center">
-          <div className="text-center">
-            <div className="text-6xl md:text-8xl font-extralight text-accent mb-2">10x</div>
-            <p className="text-sm text-muted-foreground">más rápido que el proceso manual</p>
+        <div className="p-6 rounded-2xl bg-card border border-border">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M9 12l2 2 4-4" />
+                <circle cx="12" cy="12" r="10" />
+              </svg>
+            </div>
+            <h3 className="font-medium">Control de calidad</h3>
           </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Plugin de After Effects que detecta errores antes del render. Sistema de feedback integrado.
+          </p>
+        </div>
+        <div className="p-6 rounded-2xl bg-card border border-border md:col-span-2">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+              <Globe className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="font-medium">Localización automática</h3>
+          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Doblaje de voz y subtitulado en múltiples idiomas. Escala la comunicación de Humand a nivel global.
+          </p>
         </div>
       </div>
     </div>
   )
 }
 
-function HowItWorksSlide() {
-  return (
-    <div className="w-full max-w-4xl">
-      <div className="mb-10">
-        <span className="text-xs text-accent font-mono tracking-wider">Fase 03 · El flujo</span>
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mt-3 text-balance leading-tight">
-          De brief a campaña global<br />
-          <span className="text-muted-foreground">en cuatro pasos.</span>
-        </h2>
-      </div>
+function FlowSlide() {
+  const steps = [
+    { num: "01", title: "Brief", desc: "PDF o texto estratégico" },
+    { num: "02", title: "Guion", desc: "Generación automática" },
+    { num: "03", title: "Storyboard", desc: "Imágenes + brandbook" },
+    { num: "04", title: "Global", desc: "Doblaje + subtítulos" },
+  ]
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { num: "01", title: "Brief", desc: "Ingesta de PDF o texto estratégico" },
-          { num: "02", title: "Guion", desc: "Generación automática con IA" },
-          { num: "03", title: "Producción", desc: "Motion design con QA integrado" },
-          { num: "04", title: "Global", desc: "Doblaje y subtítulos multi-idioma" },
-        ].map((step) => (
-          <div
-            key={step.num}
-            className="p-4 md:p-5 border border-border rounded-lg hover:border-accent/50 transition-colors"
-          >
-            <span className="text-accent font-mono text-xs">{step.num}</span>
-            <h3 className="font-medium mt-2 mb-1">{step.title}</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">{step.desc}</p>
+  return (
+    <div className="w-full max-w-4xl text-center">
+      <PhaseBadge phase="03" title="EL FLUJO" />
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+        De brief a{" "}
+        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+          campaña global.
+        </span>
+      </h2>
+      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+        Cuatro pasos automatizados para reducir al máximo la tarea manual del equipo multimedia.
+      </p>
+
+      <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
+        {steps.map((step, index) => (
+          <div key={step.num} className="flex items-center">
+            <div className="flex flex-col items-center">
+              <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-medium mb-3">
+                {step.num}
+              </div>
+              <h3 className="font-medium mb-1">{step.title}</h3>
+              <p className="text-xs text-muted-foreground">{step.desc}</p>
+            </div>
+            {index < steps.length - 1 && (
+              <div className="hidden md:block w-12 h-px bg-border mx-2 mt-[-30px]" />
+            )}
           </div>
         ))}
       </div>
 
-      <div className="mt-10 p-5 border border-accent/30 rounded-lg bg-accent/5">
-        <p className="text-sm text-muted-foreground text-center">
-          <span className="text-foreground">Objetivo:</span> Reducir al máximo la tarea manual del equipo multimedia, 
-          permitiendo enfocarse en crear motion graphics de alta calidad.
+      <div className="mt-12 p-6 rounded-2xl bg-primary/5 border border-primary/20 inline-block">
+        <p className="text-sm text-foreground">
+          <span className="font-medium">Objetivo:</span> El diseñador se enfoca solo en crear motion graphics de alta calidad.
         </p>
       </div>
     </div>
@@ -278,33 +351,34 @@ function TeamSlide() {
   ]
 
   return (
-    <div className="w-full max-w-4xl">
-      <div className="mb-10">
-        <span className="text-xs text-accent font-mono tracking-wider">Fase 04 · Equipo</span>
-        <h2 className="text-3xl md:text-5xl lg:text-6xl font-extralight tracking-tight mt-3 text-balance">
-          El equipo detrás.
-        </h2>
-      </div>
+    <div className="w-full max-w-4xl text-center">
+      <PhaseBadge phase="04" title="EL EQUIPO" />
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-12 text-balance">
+        El equipo{" "}
+        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+          detrás.
+        </span>
+      </h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {team.map((member) => (
           <div
             key={member}
-            className="p-4 border border-border rounded-lg hover:border-accent/50 transition-colors text-center"
+            className="p-4 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-3">
-              <span className="text-accent text-xs font-medium">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-blue-400/20 flex items-center justify-center mx-auto mb-3">
+              <span className="text-primary text-sm font-medium">
                 {member.split(" ").map(n => n[0]).join("")}
               </span>
             </div>
-            <p className="text-sm">{member}</p>
+            <p className="text-sm font-medium">{member}</p>
           </div>
         ))}
       </div>
 
       <div className="mt-16 pt-8 border-t border-border">
-        <p className="text-xs text-muted-foreground">
-          hustudio — by humand · 2026
+        <p className="text-sm text-muted-foreground">
+          hustudio — by humand
         </p>
       </div>
     </div>
