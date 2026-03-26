@@ -296,7 +296,7 @@ function FlowSlide() {
     { num: "01", title: "Brief", desc: "PDF o texto estratégico" },
     { num: "02", title: "Guion", desc: "Generación automática" },
     { num: "03", title: "Storyboard", desc: "Imágenes + brandbook" },
-    { num: "04", title: "QA", desc: "Errores pre/post render" },
+    { num: "04", title: "QA", desc: "Errores + feedback centralizado" },
     { num: "05", title: "Global", desc: "Doblaje + subtítulos" },
   ]
 
