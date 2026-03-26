@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Sparkles, Globe, ChevronRight, ChevronLeft } from "lucide-react"
+import Image from "next/image"
 
 const slides = [
   { id: "cover", phase: null, title: null },
@@ -613,14 +614,14 @@ function FlowSlide() {
 
 function TeamSlide() {
   const team = [
-    "Ariel Atar",
-    "Iván Sevilla",
-    "Manuel Vazquez",
-    "Ivan Samaniego",
-    "Milagros Suarez",
-    "Mora Lopez Moret",
-    "Santiago Slavtusky",
-    "Carolina Brunke",
+    { name: "Ariel Atar", photo: "/team/ariel.jpeg" },
+    { name: "Iván Sevilla", photo: "/team/ivan-sevilla.jpg" },
+    { name: "Manuel Vazquez", photo: "/team/manuel.jpeg" },
+    { name: "Ivan Samaniego", photo: "/team/ivan-samaniego.png" },
+    { name: "Milagros Suarez", photo: "/team/milagros.jpg" },
+    { name: "Mora Lopez Moret", photo: "/team/mora.png" },
+    { name: "Santiago Slavtusky", photo: "/team/santiago.png" },
+    { name: "Carolina Brunke", photo: "/team/carolina.jpeg" },
   ]
 
   return (
@@ -646,7 +647,7 @@ function TeamSlide() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {team.map((member, index) => (
           <div
-            key={member}
+            key={member.name}
             className="p-4 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
             style={{
               backgroundColor: "#FFFFFF",
@@ -654,19 +655,23 @@ function TeamSlide() {
               animation: `popIn 0.5s ease ${index * 0.05}s backwards`
             }}
           >
-            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:rotate-6 relative"
+            <div className="w-16 h-16 rounded-full mx-auto mb-3 transition-all duration-300 group-hover:scale-110 relative overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, #D6E1FF 0%, #CAD5FE 100%)"
+                border: "2px solid #D6E1FF"
               }}>
-              <span className="text-sm font-medium" style={{ color: "#182D7A" }}>
-                {member.split(" ").map(n => n[0]).join("")}
-              </span>
+              <Image
+                src={member.photo}
+                alt={member.name}
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+              />
               <div
                 className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                 style={{ animation: "ringExpand 1.5s ease-out infinite" }}
               />
             </div>
-            <p className="text-sm font-medium" style={{ color: "#182D7A" }}>{member}</p>
+            <p className="text-sm font-medium" style={{ color: "#182D7A" }}>{member.name}</p>
             <div
               className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#496BE3] to-[#182D7A] opacity-0 group-hover:opacity-100 transition-all duration-300"
               style={{ animation: "revealWidth 0.3s ease" }}
