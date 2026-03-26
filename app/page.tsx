@@ -67,6 +67,7 @@ function LogoIcon() {
 export default function Presentation() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [videoLightboxOpen, setVideoLightboxOpen] = useState(false)
 
   const nextSlide = () => {
     if (currentSlide < slides.length - 1 && !isAnimating) {
@@ -100,7 +101,7 @@ export default function Presentation() {
     <main className="min-h-screen text-foreground flex flex-col font-sans relative overflow-hidden"
       style={{ background: "#F7F7F7" }}>
       {/* Background decorative circles - rotating smoothly */}
-      <div className="absolute left-0 top-1/3 w-64 h-64 pointer-events-none opacity-20">
+      <div className={`absolute left-0 top-1/3 w-64 h-64 pointer-events-none opacity-20 transition-all duration-300 ${videoLightboxOpen ? 'blur-sm opacity-10' : ''}`}>
         <div style={{ animation: "spinSlow 90s linear infinite" }}>
           <svg viewBox="0 0 200 200" className="w-full h-full">
             <circle cx="100" cy="100" r="80" fill="none" stroke="#496BE3" strokeWidth="1" strokeDasharray="4 4" />
@@ -110,7 +111,7 @@ export default function Presentation() {
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 flex items-center justify-between backdrop-blur-sm"
+      <header className={`fixed top-0 left-0 right-0 z-50 px-6 md:px-12 flex items-center justify-between backdrop-blur-sm transition-all duration-300 ${videoLightboxOpen ? 'blur-sm opacity-50' : ''}`}
         style={{
           background: "rgba(247, 247, 247, 0.85)",
           animation: "fadeIn 0.6s ease",
@@ -188,17 +189,17 @@ export default function Presentation() {
             </div>
             <span className="text-sm" style={{ color: "#3A3A45" }}>Activo</span>
           </div>
-          <span className="text-sm font-medium" style={{ color: "#182D7A" }}>by MultiDevs</span>
+          <span className="text-sm font-medium" style={{ color: "#182D7A" }}>by HUMAND</span>
         </div>
       </header>
 
       {/* Slide Content */}
-      <div className="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20">
+      <div className={`flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20 transition-all duration-300 ${videoLightboxOpen ? 'blur-md brightness-50' : ''}`}>
         <div key={currentSlide} style={{ animation: "fadeInBlur 0.55s ease forwards" }}>
           {currentSlide === 0 && <CoverSlide onNext={nextSlide} />}
           {currentSlide === 1 && <ProblemSlide />}
           {currentSlide === 2 && <SolutionSlide />}
-          {currentSlide === 3 && <FlowSlide />}
+          {currentSlide === 3 && <FlowSlide onVideoOpen={setVideoLightboxOpen} />}
           {currentSlide === 4 && <TeamSlide />}
         </div>
       </div>
@@ -207,7 +208,7 @@ export default function Presentation() {
       <button
         onClick={prevSlide}
         disabled={currentSlide === 0}
-        className="fixed left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-0 hover:scale-110 hover:bg-opacity-100"
+        className={`fixed left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-0 hover:scale-110 hover:bg-opacity-100 ${videoLightboxOpen ? 'blur-sm opacity-30' : ''}`}
         style={{
           backgroundColor: "rgba(214, 225, 255, 0.5)",
           color: "#182D7A"
@@ -219,7 +220,7 @@ export default function Presentation() {
       <button
         onClick={nextSlide}
         disabled={currentSlide === slides.length - 1}
-        className="fixed right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-30 hover:scale-110 hover:bg-opacity-100"
+        className={`fixed right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-30 hover:scale-110 hover:bg-opacity-100 ${videoLightboxOpen ? 'blur-sm opacity-30' : ''}`}
         style={{
           backgroundColor: "rgba(214, 225, 255, 0.5)",
           color: "#182D7A"
@@ -229,7 +230,7 @@ export default function Presentation() {
       </button>
 
       {/* Footer Navigation Dots */}
-      <footer className="fixed bottom-0 left-0 right-0 px-6 md:px-12 py-4 flex items-center justify-center backdrop-blur-sm"
+      <footer className={`fixed bottom-0 left-0 right-0 px-6 md:px-12 py-4 flex items-center justify-center backdrop-blur-sm transition-all duration-300 ${videoLightboxOpen ? 'blur-sm opacity-50' : ''}`}
         style={{
           background: "rgba(247, 247, 247, 0.85)",
           borderTop: "1px solid rgba(214, 225, 255, 0.4)"
@@ -519,14 +520,26 @@ function SolutionSlide() {
   )
 }
 
-function FlowSlide() {
+function FlowSlide({ onVideoOpen }: { onVideoOpen: (open: boolean) => void }) {
+  const [selectedStep, setSelectedStep] = useState<string | null>(null)
+
   const steps = [
-    { num: "01", title: "Brief", desc: "PDF o texto estratégico" },
-    { num: "02", title: "Guion", desc: "Generación automática" },
-    { num: "03", title: "Storyboard", desc: "Imágenes + brandbook" },
-    { num: "04", title: "QA", desc: "Errores + feedback centralizado" },
-    { num: "05", title: "Global", desc: "Doblaje + subtítulos" },
+    { num: "01", title: "Brief", desc: "PDF o texto estratégico", video: "/videos/Brief.mp4" },
+    { num: "02", title: "Guion", desc: "Generación automática", video: "/videos/Guión.mp4" },
+    { num: "03", title: "Storyboard", desc: "Imágenes + brandbook", video: "/videos/Storyboard.mp4" },
+    { num: "04", title: "QA", desc: "Errores + feedback centralizado", videos: ["/videos/QA.mp4", "/videos/QA-2.mp4"] },
+    { num: "05", title: "Global", desc: "Doblaje + subtítulos", video: "/videos/Global.mp4" },
   ]
+
+  const handleStepClick = (stepNum: string) => {
+    setSelectedStep(stepNum)
+    onVideoOpen(true)
+  }
+
+  const handleCloseLightbox = () => {
+    setSelectedStep(null)
+    onVideoOpen(false)
+  }
 
   return (
     <div className="w-full max-w-4xl text-center">
@@ -560,7 +573,9 @@ function FlowSlide() {
           <div key={step.num} className="flex items-center">
             <div className="flex flex-col items-center group"
               style={{ animation: `popIn 0.6s ease ${index * 0.1}s backwards` }}>
-              <div className="w-16 h-16 rounded-full text-white flex items-center justify-center text-lg font-medium mb-3 transition-all duration-300 hover:scale-110 hover:rotate-3 relative"
+              <button
+                onClick={() => handleStepClick(step.num)}
+                className="w-16 h-16 rounded-full text-white flex items-center justify-center text-lg font-medium mb-3 transition-all duration-300 hover:scale-110 hover:rotate-3 relative cursor-pointer"
                 style={{
                   backgroundColor: "#182D7A",
                   boxShadow: "0 4px 14px rgba(24,45,122,0.3)"
@@ -570,7 +585,7 @@ function FlowSlide() {
                   className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                   style={{ animation: "ringExpand 1.5s ease-out infinite" }}
                 />
-              </div>
+              </button>
               <h3 className="font-medium mb-1 transition-colors hover:text-[#496BE3]" style={{ color: "#182D7A" }}>{step.title}</h3>
               <p className="text-xs" style={{ color: "#3A3A45" }}>{step.desc}</p>
             </div>
@@ -608,6 +623,92 @@ function FlowSlide() {
           }}
         />
       </div>
+
+      {/* Video Lightbox */}
+      {selectedStep && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-98"
+          style={{
+            animation: "fadeIn 0.3s ease",
+            backdropFilter: "blur(10px)"
+          }}
+          onClick={handleCloseLightbox}
+        >
+          <div
+            className="relative w-full h-full flex items-center justify-center p-16"
+            style={{ animation: "scaleIn 0.4s ease" }}
+          >
+            {/* Close button - Top right corner, outside video */}
+            <button
+              onClick={handleCloseLightbox}
+              className="absolute top-4 right-4 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:rotate-90 hover:scale-110 z-20"
+              style={{
+                backgroundColor: "#182D7A",
+                color: "#FFFFFF",
+                boxShadow: "0 4px 16px rgba(24,45,122,0.6)"
+              }}
+            >
+              <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            {/* Video container with glow effect - Maximum size */}
+            <div
+              className="relative w-full h-full flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Glow effect */}
+              <div
+                className="absolute -inset-8 rounded-3xl opacity-75 blur-3xl pointer-events-none"
+                style={{
+                  background: "radial-gradient(circle, rgba(73,107,227,0.8) 0%, rgba(24,45,122,0.5) 40%, transparent 70%)",
+                  animation: "glowPulse 3s ease-in-out infinite"
+                }}
+              />
+
+              {/* Videos - Maximum fullscreen */}
+              <div className={`relative rounded-2xl overflow-hidden w-full h-full ${selectedStep === "04" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "flex items-center justify-center"}`}
+                style={{
+                  boxShadow: "0 0 80px rgba(73,107,227,0.7), 0 0 150px rgba(24,45,122,0.5)",
+                  border: "4px solid rgba(73,107,227,0.5)"
+                }}>
+                {selectedStep === "04" ? (
+                  // QA tiene dos videos
+                  <>
+                    <video
+                      className="w-full h-full object-contain"
+                      controls
+                      autoPlay
+                      style={{ backgroundColor: "#000000" }}
+                    >
+                      <source src="/videos/QA.mp4" type="video/mp4" />
+                    </video>
+                    <video
+                      className="w-full h-full object-contain"
+                      controls
+                      autoPlay
+                      style={{ backgroundColor: "#000000" }}
+                    >
+                      <source src="/videos/QA-2.mp4" type="video/mp4" />
+                    </video>
+                  </>
+                ) : (
+                  // Otros steps tienen un solo video
+                  <video
+                    className="w-full h-full object-contain"
+                    controls
+                    autoPlay
+                    style={{ backgroundColor: "#000000" }}
+                  >
+                    <source src={steps.find(s => s.num === selectedStep)?.video} type="video/mp4" />
+                  </video>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
