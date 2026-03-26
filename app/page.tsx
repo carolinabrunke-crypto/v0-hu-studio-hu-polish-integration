@@ -296,7 +296,8 @@ function FlowSlide() {
     { num: "01", title: "Brief", desc: "PDF o texto estratégico" },
     { num: "02", title: "Guion", desc: "Generación automática" },
     { num: "03", title: "Storyboard", desc: "Imágenes + brandbook" },
-    { num: "04", title: "Global", desc: "Doblaje + subtítulos" },
+    { num: "04", title: "QA", desc: "Errores pre/post render" },
+    { num: "05", title: "Global", desc: "Doblaje + subtítulos" },
   ]
 
   return (
@@ -309,7 +310,7 @@ function FlowSlide() {
         </span>
       </h2>
       <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
-        Cuatro pasos automatizados para reducir al máximo la tarea manual del equipo multimedia.
+        Cinco pasos automatizados para reducir al máximo la tarea manual del equipo multimedia.
       </p>
 
       <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
