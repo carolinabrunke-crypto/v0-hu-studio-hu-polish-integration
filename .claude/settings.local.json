@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/santi/Documents/PROYECTOS/Humand/Huckaton/Github/hu-studio/**)",
+      "Bash(npm run dev)",
+      "Bash(taskkill /F /PID 140984)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

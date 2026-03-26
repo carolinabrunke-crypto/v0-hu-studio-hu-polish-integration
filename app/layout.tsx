@@ -7,7 +7,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'HuStudio — by Humand',
+  title: 'HuStudio — by MultiDevs',
   description: 'Automatización end-to-end para producción audiovisual con IA',
   generator: 'v0.app',
   icons: {

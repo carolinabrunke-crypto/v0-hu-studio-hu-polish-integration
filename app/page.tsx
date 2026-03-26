@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Sparkles, Globe, ChevronRight, ChevronLeft } from "lucide-react"
 
 const slides = [
@@ -18,58 +18,120 @@ const navSteps = [
   { num: "04", label: "EQUIPO" },
 ]
 
+const LOGO_SQUARES = [
+  { x: 2, y: 2, delay: "0s" },
+  { x: 9, y: 2, delay: "0.55s" },
+  { x: 9, y: 9, delay: "1.1s" },
+  { x: 2, y: 9, delay: "1.65s" },
+]
+
+function LogoIcon() {
+  return (
+    <div
+      className="w-9 h-9 rounded-lg flex items-center justify-center relative overflow-hidden flex-shrink-0"
+      style={{
+        background: "linear-gradient(135deg, #182D7A 0%, #2D4FA3 100%)",
+        animation: "logoBreathe 3.5s ease-in-out infinite",
+      }}
+    >
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        {LOGO_SQUARES.map((sq, i) => (
+          <rect
+            key={i}
+            x={sq.x}
+            y={sq.y}
+            width="5"
+            height="5"
+            rx="1.5"
+            fill="white"
+            style={{
+              animation: "logoChase 2.2s ease-in-out infinite",
+              animationDelay: sq.delay,
+            }}
+          />
+        ))}
+      </svg>
+      {/* Shimmer effect overlay */}
+      <div
+        className="absolute inset-0 w-[200%] h-full"
+        style={{
+          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%)",
+          animation: "shimmerSweep 4s ease-in-out infinite 1s",
+        }}
+      />
+    </div>
+  )
+}
+
 export default function Presentation() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   const nextSlide = () => {
-    if (currentSlide < slides.length - 1) {
+    if (currentSlide < slides.length - 1 && !isAnimating) {
+      setIsAnimating(true)
       setCurrentSlide(currentSlide + 1)
+      setTimeout(() => setIsAnimating(false), 600)
     }
   }
 
   const prevSlide = () => {
-    if (currentSlide > 0) {
+    if (currentSlide > 0 && !isAnimating) {
+      setIsAnimating(true)
       setCurrentSlide(currentSlide - 1)
+      setTimeout(() => setIsAnimating(false), 600)
     }
   }
 
   const currentPhase = slides[currentSlide].phase
 
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") nextSlide()
+      if (e.key === "ArrowLeft") prevSlide()
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [currentSlide, isAnimating])
+
   return (
-    <main className="min-h-screen bg-background text-foreground flex flex-col font-sans relative overflow-hidden">
-      {/* Decorative elements */}
-      <div className="absolute left-0 top-1/3 w-64 h-64 pointer-events-none">
-        <svg viewBox="0 0 200 200" className="w-full h-full text-muted-foreground/20">
-          <circle cx="100" cy="100" r="80" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" />
-          <circle cx="100" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="1" />
-        </svg>
-      </div>
-      <div className="absolute right-0 bottom-1/4 w-48 h-48 pointer-events-none opacity-30">
-        <svg viewBox="0 0 200 200" className="w-full h-full text-primary/30">
-          <path d="M100,20 Q180,100 100,180 Q20,100 100,20" fill="none" stroke="currentColor" strokeWidth="1" />
-        </svg>
+    <main className="min-h-screen text-foreground flex flex-col font-sans relative overflow-hidden"
+      style={{ background: "#F7F7F7" }}>
+      {/* Background decorative circles - rotating smoothly */}
+      <div className="absolute left-0 top-1/3 w-64 h-64 pointer-events-none opacity-20">
+        <div style={{ animation: "spinSlow 90s linear infinite" }}>
+          <svg viewBox="0 0 200 200" className="w-full h-full">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="#496BE3" strokeWidth="1" strokeDasharray="4 4" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="#496BE3" strokeWidth="1" />
+          </svg>
+        </div>
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 py-5 flex items-center justify-between bg-background/80 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 px-6 md:px-12 flex items-center justify-between backdrop-blur-sm"
+        style={{
+          background: "rgba(247, 247, 247, 0.85)",
+          animation: "fadeIn 0.6s ease",
+          borderBottom: "1px solid rgba(214, 225, 255, 0.4)",
+          minHeight: "80px"
+        }}>
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
-            <div className="grid grid-cols-2 gap-0.5">
-              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-              <div className="w-2 h-2 bg-primary-foreground rounded-sm" />
-            </div>
+        <div className="flex items-center gap-3 transition-all duration-300 hover:scale-105">
+          <LogoIcon />
+          <div className="flex items-baseline" style={{ letterSpacing: "-0.03em" }}>
+            <span className="text-[21px] font-light" style={{ color: "#182D7A" }}>
+              hu
+            </span>
+            <span className="text-[21px] font-extrabold" style={{ color: "#182D7A" }}>
+              studio
+            </span>
           </div>
-          <span className="text-lg font-medium tracking-tight">
-            hu<span className="text-primary">studio</span>
-          </span>
         </div>
 
         {/* Navigation Steps */}
         {currentSlide > 0 && (
-          <nav className="hidden md:flex items-center gap-0">
+          <nav className="hidden md:flex items-center gap-0" style={{ animation: "fadeIn 0.4s ease" }}>
             {navSteps.map((step, index) => {
               const isActive = currentPhase === step.num
               const isPast = currentPhase && parseInt(currentPhase) > parseInt(step.num)
@@ -79,25 +141,33 @@ export default function Presentation() {
                 <div key={step.num} className="flex items-center">
                   <button
                     onClick={() => setCurrentSlide(index + 1)}
-                    className={`flex flex-col items-center gap-1 px-3 transition-all ${
-                      isActive ? "opacity-100" : "opacity-50 hover:opacity-75"
-                    }`}
+                    className={`flex flex-col items-center gap-1 px-3 transition-all duration-300 ${isActive ? "opacity-100" : "opacity-50 hover:opacity-75"
+                      }`}
                   >
                     <div
-                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
-                        isActive
-                          ? "bg-primary text-primary-foreground"
-                          : isPast
-                          ? "bg-primary/20 text-primary"
-                          : "bg-muted text-muted-foreground"
-                      }`}
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all duration-300 ${isActive
+                        ? "text-white shadow-lg"
+                        : isPast
+                          ? "text-white"
+                          : "text-gray-500"
+                        }`}
+                      style={{
+                        backgroundColor: isActive || isPast ? "#182D7A" : "#E8E8E8"
+                      }}
                     >
                       {step.num}
                     </div>
-                    <span className="text-[10px] tracking-wider text-muted-foreground">{step.label}</span>
+                    <span className="text-[10px] tracking-wider" style={{ color: "#3A3A45" }}>
+                      {step.label}
+                    </span>
                   </button>
                   {!isLast && (
-                    <div className={`w-8 h-px ${isPast || isActive ? "bg-primary/40" : "bg-border"}`} />
+                    <div
+                      className={`w-8 h-px transition-all duration-500`}
+                      style={{
+                        backgroundColor: isPast || isActive ? "#496BE3" : "#D6E1FF"
+                      }}
+                    />
                   )}
                 </div>
               )
@@ -108,53 +178,75 @@ export default function Presentation() {
         {/* Status */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-sm text-muted-foreground">Activo</span>
+            <div className="relative">
+              <div className="w-2 h-2 rounded-full bg-green-500" />
+              <div
+                className="absolute inset-0 w-2 h-2 rounded-full bg-green-500"
+                style={{ animation: "pulseRing 2s ease-out infinite" }}
+              />
+            </div>
+            <span className="text-sm" style={{ color: "#3A3A45" }}>Activo</span>
           </div>
-          <span className="text-sm text-muted-foreground">by HUMAND</span>
+          <span className="text-sm font-medium" style={{ color: "#182D7A" }}>by MultiDevs</span>
         </div>
       </header>
 
       {/* Slide Content */}
       <div className="flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20">
-        {currentSlide === 0 && <CoverSlide onNext={nextSlide} />}
-        {currentSlide === 1 && <ProblemSlide />}
-        {currentSlide === 2 && <SolutionSlide />}
-        {currentSlide === 3 && <FlowSlide />}
-        {currentSlide === 4 && <TeamSlide />}
+        <div key={currentSlide} style={{ animation: "fadeInBlur 0.55s ease forwards" }}>
+          {currentSlide === 0 && <CoverSlide onNext={nextSlide} />}
+          {currentSlide === 1 && <ProblemSlide />}
+          {currentSlide === 2 && <SolutionSlide />}
+          {currentSlide === 3 && <FlowSlide />}
+          {currentSlide === 4 && <TeamSlide />}
+        </div>
       </div>
 
-      {/* Footer Navigation */}
-      <footer className="fixed bottom-0 left-0 right-0 px-6 md:px-12 py-4 flex items-center justify-between bg-background/80 backdrop-blur-sm">
-        <button
-          onClick={prevSlide}
-          disabled={currentSlide === 0}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-0"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span className="hidden md:inline">Anterior</span>
-        </button>
+      {/* Navigation Arrows - Centered vertically */}
+      <button
+        onClick={prevSlide}
+        disabled={currentSlide === 0}
+        className="fixed left-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-0 hover:scale-110 hover:bg-opacity-100"
+        style={{
+          backgroundColor: "rgba(214, 225, 255, 0.5)",
+          color: "#182D7A"
+        }}
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
 
+      <button
+        onClick={nextSlide}
+        disabled={currentSlide === slides.length - 1}
+        className="fixed right-6 top-1/2 -translate-y-1/2 z-50 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-200 disabled:opacity-30 hover:scale-110 hover:bg-opacity-100"
+        style={{
+          backgroundColor: "rgba(214, 225, 255, 0.5)",
+          color: "#182D7A"
+        }}
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+
+      {/* Footer Navigation Dots */}
+      <footer className="fixed bottom-0 left-0 right-0 px-6 md:px-12 py-4 flex items-center justify-center backdrop-blur-sm"
+        style={{
+          background: "rgba(247, 247, 247, 0.85)",
+          borderTop: "1px solid rgba(214, 225, 255, 0.4)"
+        }}>
         <div className="flex items-center gap-2">
           {slides.map((_, index) => (
             <button
               key={index}
               onClick={() => setCurrentSlide(index)}
-              className={`w-2 h-2 rounded-full transition-all ${
-                currentSlide === index ? "bg-primary w-6" : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-              }`}
+              className={`h-2 rounded-full transition-all duration-500 hover:scale-110 ${currentSlide === index ? "w-6" : "w-2"
+                }`}
+              style={{
+                backgroundColor: currentSlide === index ? "#182D7A" : "#D6E1FF",
+                animation: currentSlide === index ? "scaleIn 0.3s ease" : "none"
+              }}
             />
           ))}
         </div>
-
-        <button
-          onClick={nextSlide}
-          disabled={currentSlide === slides.length - 1}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors disabled:opacity-30"
-        >
-          <span className="hidden md:inline">Siguiente</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
       </footer>
     </main>
   )
@@ -162,9 +254,21 @@ export default function Presentation() {
 
 function PhaseBadge({ phase, title }: { phase: string; title: string }) {
   return (
-    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
-      <Sparkles className="w-4 h-4" />
-      <span>FASE {phase} - {title}</span>
+    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium mb-6 relative overflow-hidden"
+      style={{
+        backgroundColor: "#D6E1FF",
+        color: "#182D7A",
+        animation: "popIn 0.5s ease"
+      }}>
+      <Sparkles className="w-4 h-4" style={{ animation: "sparkleScale 2s ease-in-out infinite" }} />
+      <span>FASE {phase} — {title}</span>
+      <div
+        className="absolute inset-0 w-[200%] h-full"
+        style={{
+          background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100%)",
+          animation: "shimmerSweep 3s ease-in-out infinite 0.5s",
+        }}
+      />
     </div>
   )
 }
@@ -172,23 +276,49 @@ function PhaseBadge({ phase, title }: { phase: string; title: string }) {
 function CoverSlide({ onNext }: { onNext: () => void }) {
   return (
     <div className="w-full max-w-4xl text-center">
-      <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-6 text-balance">
+      <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-6 text-balance"
+        style={{
+          color: "#182D7A",
+          animation: "fadeInUp 0.8s ease"
+        }}>
         De brief a{" "}
-        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+        <span
+          className="bg-gradient-to-r from-[#182D7A] via-[#496BE3] to-[#182D7A] bg-clip-text text-transparent"
+          style={{
+            backgroundSize: "200% auto",
+            animation: "gradientFlow 5s ease infinite"
+          }}
+        >
           campaña global
         </span>
         <br />
         en minutos.
       </h1>
-      <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-10 text-balance">
+      <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed mb-10 text-balance"
+        style={{
+          color: "#3A3A45",
+          animation: "fadeInUp 0.8s ease 0.2s backwards"
+        }}>
         Ecosistema autónomo de producción audiovisual con IA. Automatiza pre-producción, control de calidad y localización.
       </p>
       <button
         onClick={onNext}
-        className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full text-sm font-medium hover:bg-primary/90 transition-colors"
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:gap-3 relative overflow-hidden group"
+        style={{
+          backgroundColor: "#182D7A",
+          color: "#FFFFFF",
+          animation: "popIn 0.8s ease 0.4s backwards"
+        }}
       >
-        <span>Ver presentación</span>
-        <ChevronRight className="w-4 h-4" />
+        <span className="relative z-10">Ver presentación</span>
+        <ChevronRight className="w-4 h-4 relative z-10 transition-transform group-hover:translate-x-1" />
+        <div
+          className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%)",
+            animation: "shimmerSweep 1.5s ease-in-out infinite",
+          }}
+        />
       </button>
     </div>
   )
@@ -198,38 +328,64 @@ function ProblemSlide() {
   return (
     <div className="w-full max-w-4xl text-center">
       <PhaseBadge phase="01" title="EL PROBLEMA" />
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance"
+        style={{
+          color: "#182D7A",
+          animation: "fadeInUp 0.5s ease"
+        }}>
         El proceso manual{" "}
-        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+        <span
+          className="bg-gradient-to-r from-[#182D7A] via-[#496BE3] to-[#182D7A] bg-clip-text text-transparent"
+          style={{
+            backgroundSize: "200% auto",
+            animation: "gradientFlow 5s ease infinite"
+          }}
+        >
           consume al equipo.
         </span>
       </h2>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+      <p className="text-lg max-w-2xl mx-auto mb-12"
+        style={{
+          color: "#3A3A45",
+          animation: "fadeInUp 0.5s ease 0.1s backwards"
+        }}>
         Los equipos multimedia pierden semanas en tareas repetitivas que la IA puede automatizar.
       </p>
 
       <div className="grid md:grid-cols-3 gap-6 text-left">
-        <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">01</div>
-          <h3 className="font-medium mb-2">Pre-producción lenta</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Guiones, storyboards y locuciones requieren semanas de trabajo manual.
-          </p>
-        </div>
-        <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">02</div>
-          <h3 className="font-medium mb-2">Errores costosos</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Errores en motion design detectados post-render causan re-trabajos.
-          </p>
-        </div>
-        <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-sm mb-4">03</div>
-          <h3 className="font-medium mb-2">Escalar es multiplicar</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Adaptar a múltiples idiomas significa repetir todo el proceso.
-          </p>
-        </div>
+        {[
+          { num: "01", title: "Pre-producción lenta", desc: "Guiones, storyboards y locuciones requieren semanas de trabajo manual.", delay: "0.1s" },
+          { num: "02", title: "Errores costosos", desc: "Errores en motion design detectados post-render causan re-trabajos.", delay: "0.2s" },
+          { num: "03", title: "Escalar es multiplicar", desc: "Adaptar a múltiples idiomas significa repetir todo el proceso.", delay: "0.3s" }
+        ].map((item, index) => (
+          <div key={index}
+            className="p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderColor: "#D6E1FF",
+              animation: `fadeInUp 0.6s ease ${item.delay} backwards`
+            }}>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium mb-4 relative"
+              style={{
+                backgroundColor: "#D6E1FF",
+                color: "#182D7A"
+              }}>
+              {item.num}
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
+            </div>
+            <h3 className="font-medium mb-2" style={{ color: "#182D7A" }}>{item.title}</h3>
+            <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
+              {item.desc}
+            </p>
+            <div
+              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#496BE3] to-[#182D7A] opacity-0 group-hover:opacity-100 transition-all duration-300"
+              style={{ animation: "revealWidth 0.3s ease" }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -239,52 +395,123 @@ function SolutionSlide() {
   return (
     <div className="w-full max-w-4xl text-center">
       <PhaseBadge phase="02" title="LA SOLUCIÓN" />
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance"
+        style={{
+          color: "#182D7A",
+          animation: "fadeInUp 0.5s ease"
+        }}>
         Automatización{" "}
-        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+        <span
+          className="bg-gradient-to-r from-[#182D7A] via-[#496BE3] to-[#182D7A] bg-clip-text text-transparent"
+          style={{
+            backgroundSize: "200% auto",
+            animation: "gradientFlow 5s ease infinite"
+          }}
+        >
           end-to-end.
         </span>
       </h2>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+      <p className="text-lg max-w-2xl mx-auto mb-12"
+        style={{
+          color: "#3A3A45",
+          animation: "fadeInUp 0.5s ease 0.1s backwards"
+        }}>
         hustudio combina generación de contenido con IA y control de calidad para motion design.
       </p>
 
       <div className="grid md:grid-cols-2 gap-6 text-left">
-        <div className="p-6 rounded-2xl bg-card border border-border">
+        <div className="p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#D6E1FF",
+            animation: "fadeInUp 0.6s ease 0.1s backwards"
+          }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center relative"
+              style={{
+                backgroundColor: "#D6E1FF"
+              }}>
+              <Sparkles className="w-5 h-5" style={{ color: "#182D7A" }} />
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
             </div>
-            <h3 className="font-medium">Generación con IA</h3>
+            <h3 className="font-medium" style={{ color: "#182D7A" }}>Generación con IA</h3>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
             De un PDF a guion, storyboard, imágenes y locución alineados con tu brandbook. Automáticamente.
           </p>
+          <div
+            className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
+              animation: "shimmerSweep 2s ease-in-out infinite",
+            }}
+          />
         </div>
-        <div className="p-6 rounded-2xl bg-card border border-border">
+        <div className="p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#D6E1FF",
+            animation: "fadeInUp 0.6s ease 0.2s backwards"
+          }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center relative"
+              style={{
+                backgroundColor: "#D6E1FF"
+              }}>
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#182D7A" strokeWidth="2">
                 <path d="M9 12l2 2 4-4" />
                 <circle cx="12" cy="12" r="10" />
               </svg>
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
             </div>
-            <h3 className="font-medium">Control de calidad</h3>
+            <h3 className="font-medium" style={{ color: "#182D7A" }}>Control de calidad</h3>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
             Plugin de After Effects que detecta errores antes del render. Sistema de feedback integrado.
           </p>
+          <div
+            className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
+              animation: "shimmerSweep 2s ease-in-out infinite 0.3s",
+            }}
+          />
         </div>
-        <div className="p-6 rounded-2xl bg-card border border-border md:col-span-2">
+        <div className="p-6 rounded-2xl border md:col-span-2 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#D6E1FF",
+            animation: "fadeInUp 0.6s ease 0.3s backwards"
+          }}>
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-              <Globe className="w-5 h-5 text-primary" />
+            <div className="w-10 h-10 rounded-full flex items-center justify-center relative"
+              style={{
+                backgroundColor: "#D6E1FF"
+              }}>
+              <Globe className="w-5 h-5" style={{ color: "#182D7A" }} />
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
             </div>
-            <h3 className="font-medium">Localización automática</h3>
+            <h3 className="font-medium" style={{ color: "#182D7A" }}>Localización automática</h3>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
             Doblaje de voz y subtitulado en múltiples idiomas. Escala la comunicación de Humand a nivel global.
           </p>
+          <div
+            className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            style={{
+              background: "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
+              animation: "shimmerSweep 2s ease-in-out infinite 0.6s",
+            }}
+          />
         </div>
       </div>
     </div>
@@ -303,37 +530,82 @@ function FlowSlide() {
   return (
     <div className="w-full max-w-4xl text-center">
       <PhaseBadge phase="03" title="EL FLUJO" />
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance">
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-4 text-balance"
+        style={{
+          color: "#182D7A",
+          animation: "fadeInUp 0.5s ease"
+        }}>
         De brief a{" "}
-        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+        <span
+          className="bg-gradient-to-r from-[#182D7A] via-[#496BE3] to-[#182D7A] bg-clip-text text-transparent"
+          style={{
+            backgroundSize: "200% auto",
+            animation: "gradientFlow 5s ease infinite"
+          }}
+        >
           campaña global.
         </span>
       </h2>
-      <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12">
+      <p className="text-lg max-w-2xl mx-auto mb-12"
+        style={{
+          color: "#3A3A45",
+          animation: "fadeInUp 0.5s ease 0.1s backwards"
+        }}>
         Cinco pasos automatizados para reducir al máximo la tarea manual del equipo multimedia.
       </p>
 
       <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-0">
         {steps.map((step, index) => (
           <div key={step.num} className="flex items-center">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-medium mb-3">
+            <div className="flex flex-col items-center group"
+              style={{ animation: `popIn 0.6s ease ${index * 0.1}s backwards` }}>
+              <div className="w-16 h-16 rounded-full text-white flex items-center justify-center text-lg font-medium mb-3 transition-all duration-300 hover:scale-110 hover:rotate-3 relative"
+                style={{
+                  backgroundColor: "#182D7A",
+                  boxShadow: "0 4px 14px rgba(24,45,122,0.3)"
+                }}>
                 {step.num}
+                <div
+                  className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+                />
               </div>
-              <h3 className="font-medium mb-1">{step.title}</h3>
-              <p className="text-xs text-muted-foreground">{step.desc}</p>
+              <h3 className="font-medium mb-1 transition-colors hover:text-[#496BE3]" style={{ color: "#182D7A" }}>{step.title}</h3>
+              <p className="text-xs" style={{ color: "#3A3A45" }}>{step.desc}</p>
             </div>
             {index < steps.length - 1 && (
-              <div className="hidden md:block w-12 h-px bg-border mx-2 mt-[-30px]" />
+              <div
+                className="hidden md:block w-12 h-px mx-2 mt-[-30px] relative overflow-hidden"
+                style={{
+                  backgroundColor: "#D6E1FF",
+                  animation: `fadeIn 0.5s ease ${index * 0.1 + 0.3}s backwards`
+                }}>
+                <div
+                  className="absolute inset-0 h-full bg-gradient-to-r from-transparent via-[#496BE3] to-transparent"
+                  style={{ animation: "shimmer 2s ease-in-out infinite" }}
+                />
+              </div>
             )}
           </div>
         ))}
       </div>
 
-      <div className="mt-12 p-6 rounded-2xl bg-primary/5 border border-primary/20 inline-block">
-        <p className="text-sm text-foreground">
+      <div className="mt-12 p-6 rounded-2xl inline-block border relative overflow-hidden group"
+        style={{
+          backgroundColor: "#EEF2FF",
+          borderColor: "#496BE3",
+          animation: "scaleIn 0.6s ease 0.6s backwards"
+        }}>
+        <p className="text-sm relative z-10" style={{ color: "#182D7A" }}>
           <span className="font-medium">Objetivo:</span> El diseñador se enfoca solo en crear motion graphics de alta calidad.
         </p>
+        <div
+          className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{
+            background: "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.1) 50%, transparent 100%)",
+            animation: "shimmerSweep 2s ease-in-out infinite",
+          }}
+        />
       </div>
     </div>
   )
@@ -354,32 +626,62 @@ function TeamSlide() {
   return (
     <div className="w-full max-w-4xl text-center">
       <PhaseBadge phase="04" title="EL EQUIPO" />
-      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-12 text-balance">
+      <h2 className="text-4xl md:text-6xl lg:text-7xl font-light tracking-tight mb-12 text-balance"
+        style={{
+          color: "#182D7A",
+          animation: "fadeInUp 0.5s ease"
+        }}>
         El equipo{" "}
-        <span className="bg-gradient-to-r from-primary via-blue-400 to-primary bg-clip-text text-transparent">
+        <span
+          className="bg-gradient-to-r from-[#182D7A] via-[#496BE3] to-[#182D7A] bg-clip-text text-transparent"
+          style={{
+            backgroundSize: "200% auto",
+            animation: "gradientFlow 5s ease infinite"
+          }}
+        >
           detrás.
         </span>
       </h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {team.map((member) => (
+        {team.map((member, index) => (
           <div
             key={member}
-            className="p-4 rounded-2xl bg-card border border-border hover:border-primary/30 transition-colors"
+            className="p-4 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderColor: "#D6E1FF",
+              animation: `popIn 0.5s ease ${index * 0.05}s backwards`
+            }}
           >
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-blue-400/20 flex items-center justify-center mx-auto mb-3">
-              <span className="text-primary text-sm font-medium">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 transition-all duration-300 group-hover:rotate-6 relative"
+              style={{
+                background: "linear-gradient(135deg, #D6E1FF 0%, #CAD5FE 100%)"
+              }}>
+              <span className="text-sm font-medium" style={{ color: "#182D7A" }}>
                 {member.split(" ").map(n => n[0]).join("")}
               </span>
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
             </div>
-            <p className="text-sm font-medium">{member}</p>
+            <p className="text-sm font-medium" style={{ color: "#182D7A" }}>{member}</p>
+            <div
+              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-[#496BE3] to-[#182D7A] opacity-0 group-hover:opacity-100 transition-all duration-300"
+              style={{ animation: "revealWidth 0.3s ease" }}
+            />
           </div>
         ))}
       </div>
 
-      <div className="mt-16 pt-8 border-t border-border">
-        <p className="text-sm text-muted-foreground">
-          hustudio — by humand
+      <div className="mt-16 pt-8 border-t" style={{ borderColor: "#D6E1FF" }}>
+        <p className="text-sm font-medium"
+          style={{
+            color: "#182D7A",
+            animation: "fadeIn 0.8s ease 1s backwards"
+          }}>
+          hustudio — by MultiDevs
         </p>
       </div>
     </div>

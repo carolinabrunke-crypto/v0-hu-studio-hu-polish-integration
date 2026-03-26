@@ -4,39 +4,40 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.55 0.18 260);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.145 0 0);
-  --muted: oklch(0.96 0.005 260);
-  --muted-foreground: oklch(0.5 0 0);
-  --accent: oklch(0.55 0.18 260);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.9 0.005 260);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.55 0.18 260);
-  --chart-1: oklch(0.55 0.18 260);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.55 0.18 260);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.96 0.005 260);
-  --sidebar-accent-foreground: oklch(0.145 0 0);
-  --sidebar-border: oklch(0.9 0.005 260);
-  --sidebar-ring: oklch(0.55 0.18 260);
+  /* Humand Brand Colors - Exact from hu-studio */
+  --humand-primary: #182D7A;
+  --humand-secondary: #496BE3;
+  --humand-accent: #F8F4ED;
+  --humand-periwinkle: #CAD5FE;
+  --humand-light: #D6E1FF;
+  --humand-softest: #EEF2FF;
+  --humand-black: #000000;
+  --humand-text: #3A3A45;
+  --humand-bg: #F7F7F7;
+  --humand-border: #E8E8E8;
+  --humand-white: #FFFFFF;
+
+  /* Mapped to Tailwind theme */
+  --background: #F7F7F7;
+  --foreground: #000000;
+  --card: #FFFFFF;
+  --card-foreground: #182D7A;
+  --popover: #FFFFFF;
+  --popover-foreground: #182D7A;
+  --primary: #182D7A;
+  --primary-foreground: #FFFFFF;
+  --secondary: #496BE3;
+  --secondary-foreground: #FFFFFF;
+  --muted: #E8E8E8;
+  --muted-foreground: #3A3A45;
+  --accent: #496BE3;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+  --border: #D6E1FF;
+  --input: #EEF2FF;
+  --ring: #496BE3;
+  --radius: 0.75rem;
 }
 
 @theme inline {
@@ -87,4 +88,157 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ─── Keyframe Animations from hu-studio ──────────────────────────────────────────────────── */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%,  100% { transform: translateY(0px)  rotate(0deg); }
+  50%        { transform: translateY(-10px) rotate(1.5deg); }
+}
+
+@keyframes floatReverse {
+  0%,  100% { transform: translateY(0px) rotate(0deg);  }
+  50%        { transform: translateY(10px) rotate(-1.5deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0px  rgba(24, 45, 122, 0.35); }
+  70%  { box-shadow: 0 0 0 14px rgba(24, 45, 122, 0);    }
+  100% { box-shadow: 0 0 0 0px  rgba(24, 45, 122, 0);    }
+}
+
+@keyframes dotPulse {
+  0%,  100% { opacity: 1; transform: scale(1);    }
+  50%        { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes gradientFlow {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-24px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(24px); }
+  to   { opacity: 1; transform: translateX(0);    }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 0 0px rgba(73,107,227,0); }
+  50%      { box-shadow: 0 0 30px 6px rgba(73,107,227,0.18); }
+}
+
+@keyframes revealWidth {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes orbitSpin {
+  from { transform: rotate(0deg)   translateX(60px) rotate(0deg);   }
+  to   { transform: rotate(360deg) translateX(60px) rotate(-360deg); }
+}
+
+@keyframes logoChase {
+  0%, 100% { opacity: 0.92; }
+  40%, 60%  { opacity: 0.18; }
+}
+
+@keyframes logoBreathe {
+  0%, 100% { box-shadow: 0 4px 14px rgba(24,45,122,0.32); transform: scale(1);    }
+  50%       { box-shadow: 0 6px 22px rgba(24,45,122,0.50); transform: scale(1.05); }
+}
+
+@keyframes shimmerSweep {
+  0%   { transform: translateX(-150%) skewX(-15deg); }
+  100% { transform: translateX( 250%) skewX(-15deg); }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.88); opacity: 0; }
+  65%  { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes fadeInBlur {
+  from { opacity: 0; transform: translateY(16px); filter: blur(4px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0);   }
+}
+
+@keyframes underlineReveal {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes ringExpand {
+  0%   { box-shadow: 0 0 0 0   rgba(73,107,227,0.5); opacity:1; }
+  100% { box-shadow: 0 0 0 16px rgba(73,107,227,0);   opacity:0; }
+}
+
+@keyframes arcDash {
+  to { stroke-dashoffset: -120; }
+}
+
+@keyframes orbFloat1 {
+  0%   { transform: translate(0px,   0px)   scale(1);    opacity: 0.85; }
+  20%  { transform: translate(22px, -30px)  scale(1.04); opacity: 1;    }
+  45%  { transform: translate(-12px,-52px)  scale(0.97); opacity: 0.75; }
+  70%  { transform: translate(-28px,-22px)  scale(1.02); opacity: 0.9;  }
+  100% { transform: translate(0px,   0px)   scale(1);    opacity: 0.85; }
+}
+
+@keyframes orbFloat2 {
+  0%   { transform: translate(0px,   0px)  scale(1);    opacity: 0.7;  }
+  30%  { transform: translate(-35px, 25px) scale(1.05); opacity: 0.85; }
+  55%  { transform: translate(18px,  38px) scale(0.94); opacity: 0.65; }
+  80%  { transform: translate(28px,  10px) scale(1.03); opacity: 0.8;  }
+  100% { transform: translate(0px,   0px)  scale(1);    opacity: 0.7;  }
+}
+
+@keyframes orbFloat3 {
+  0%   { transform: translate(0px,   0px)   scale(1);    opacity: 0.6;  }
+  25%  { transform: translate(30px, -18px)  scale(1.07); opacity: 0.75; }
+  60%  { transform: translate(-18px, 28px)  scale(0.93); opacity: 0.55; }
+  85%  { transform: translate(-8px, -10px)  scale(1.02); opacity: 0.68; }
+  100% { transform: translate(0px,   0px)   scale(1);    opacity: 0.6;  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.8; }
+}
+
+@keyframes sparkleScale {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(0.7); opacity: 0.5; }
 }
