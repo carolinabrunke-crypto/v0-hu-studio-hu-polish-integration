@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, Globe, FileText, ChevronRight, ChevronLeft } from "lucide-react";
+import {
+  Sparkles,
+  Globe,
+  FileText,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import Image from "next/image";
 import mileYuriPhoto from "../fotos-perfil/Mile.png";
 import nelloDePieroTetiPhoto from "../fotos-perfil/Nello.png";
@@ -592,7 +598,8 @@ function SolutionSlide() {
             </h3>
           </div>
           <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
-            Obtén clips, citas, anuncios y correos electrónicos al instante.
+            Obten clips, citas relevantes, textos para email marketing y piezas
+            para anuncios.
           </p>
           <div
             className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
