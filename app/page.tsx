@@ -658,12 +658,13 @@ function FlowSlide({ onVideoOpen }: { onVideoOpen: (open: boolean) => void }) {
               className="relative w-full h-full flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Glow effect */}
+              {/* Glow effect - Behind video */}
               <div
                 className="absolute -inset-8 rounded-3xl opacity-75 blur-3xl pointer-events-none"
                 style={{
                   background: "radial-gradient(circle, rgba(73,107,227,0.8) 0%, rgba(24,45,122,0.5) 40%, transparent 70%)",
-                  animation: "glowPulse 3s ease-in-out infinite"
+                  animation: "glowPulse 3s ease-in-out infinite",
+                  zIndex: 0
                 }}
               />
 
@@ -671,7 +672,8 @@ function FlowSlide({ onVideoOpen }: { onVideoOpen: (open: boolean) => void }) {
               <div className={`relative rounded-2xl overflow-hidden w-full h-full ${selectedStep === "04" ? "grid grid-cols-1 md:grid-cols-2 gap-4" : "flex items-center justify-center"}`}
                 style={{
                   boxShadow: "0 0 80px rgba(73,107,227,0.7), 0 0 150px rgba(24,45,122,0.5)",
-                  border: "4px solid rgba(73,107,227,0.5)"
+                  border: "4px solid rgba(73,107,227,0.5)",
+                  zIndex: 10
                 }}>
                 {selectedStep === "04" ? (
                   // QA tiene dos videos
