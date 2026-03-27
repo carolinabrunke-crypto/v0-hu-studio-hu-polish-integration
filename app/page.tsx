@@ -194,7 +194,7 @@ export default function Presentation() {
       </header>
 
       {/* Slide Content */}
-      <div className={`flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20 transition-all duration-300 ${videoLightboxOpen ? 'blur-md brightness-50' : ''}`}>
+      <div className={`flex-1 flex items-center justify-center px-6 md:px-12 lg:px-24 pt-24 pb-20 duration-300 ${videoLightboxOpen ? 'brightness-50' : ''}`}>
         <div key={currentSlide} style={{ animation: "fadeInBlur 0.55s ease forwards" }}>
           {currentSlide === 0 && <CoverSlide onNext={nextSlide} />}
           {currentSlide === 1 && <ProblemSlide />}
