@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Sparkles, Globe, ChevronRight, ChevronLeft } from "lucide-react";
+import { Sparkles, Globe, FileText, ChevronRight, ChevronLeft } from "lucide-react";
 import Image from "next/image";
 import mileYuriPhoto from "../fotos-perfil/Mile.png";
 import nelloDePieroTetiPhoto from "../fotos-perfil/Nello.png";
@@ -581,6 +581,43 @@ function SolutionSlide() {
                 backgroundColor: "#D6E1FF",
               }}
             >
+              <FileText className="w-5 h-5" style={{ color: "#182D7A" }} />
+              <div
+                className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                style={{ animation: "ringExpand 1.5s ease-out infinite" }}
+              />
+            </div>
+            <h3 className="font-medium" style={{ color: "#182D7A" }}>
+              Contenido
+            </h3>
+          </div>
+          <p className="text-sm leading-relaxed" style={{ color: "#3A3A45" }}>
+            Obtén clips, citas, anuncios y correos electrónicos al instante.
+          </p>
+          <div
+            className="absolute inset-0 w-[200%] h-full opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
+              animation: "shimmerSweep 2s ease-in-out infinite 0.9s",
+            }}
+          />
+        </div>
+        <div
+          className="p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+          style={{
+            backgroundColor: "#FFFFFF",
+            borderColor: "#D6E1FF",
+            animation: "fadeInUp 0.6s ease 0.3s backwards",
+          }}
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-10 h-10 rounded-full flex items-center justify-center relative"
+              style={{
+                backgroundColor: "#D6E1FF",
+              }}
+            >
               <svg
                 className="w-5 h-5"
                 viewBox="0 0 24 24"
@@ -609,16 +646,16 @@ function SolutionSlide() {
             style={{
               background:
                 "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
-              animation: "shimmerSweep 2s ease-in-out infinite 0.3s",
+              animation: "shimmerSweep 2s ease-in-out infinite 0.6s",
             }}
           />
         </div>
         <div
-          className="p-6 rounded-2xl border md:col-span-2 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
+          className="p-6 rounded-2xl border transition-all duration-300 hover:scale-105 hover:shadow-xl hover:-translate-y-1 group relative overflow-hidden"
           style={{
             backgroundColor: "#FFFFFF",
             borderColor: "#D6E1FF",
-            animation: "fadeInUp 0.6s ease 0.3s backwards",
+            animation: "fadeInUp 0.6s ease 0.4s backwards",
           }}
         >
           <div className="flex items-center gap-3 mb-4">
@@ -647,7 +684,7 @@ function SolutionSlide() {
             style={{
               background:
                 "linear-gradient(90deg, transparent 0%, rgba(73,107,227,0.05) 50%, transparent 100%)",
-              animation: "shimmerSweep 2s ease-in-out infinite 0.6s",
+              animation: "shimmerSweep 2s ease-in-out infinite 0.9s",
             }}
           />
         </div>
