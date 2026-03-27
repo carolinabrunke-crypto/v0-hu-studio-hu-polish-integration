@@ -660,7 +660,7 @@ function FlowSlide({ onVideoOpen }: { onVideoOpen: (open: boolean) => void }) {
             >
               {/* Glow effect - Behind video */}
               <div
-                className="absolute -inset-8 rounded-3xl opacity-75 blur-3xl pointer-events-none"
+                className="absolute -inset-8 rounded-3xl opacity-75 pointer-events-none"
                 style={{
                   background: "radial-gradient(circle, rgba(73,107,227,0.8) 0%, rgba(24,45,122,0.5) 40%, transparent 70%)",
                   animation: "glowPulse 3s ease-in-out infinite",
