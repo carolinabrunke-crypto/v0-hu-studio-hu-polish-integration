@@ -627,7 +627,7 @@ function FlowSlide({ onVideoOpen }: { onVideoOpen: (open: boolean) => void }) {
       {/* Video Lightbox */}
       {selectedStep && (
         <div
-          className="fixed inset-0 z-[100] flex items-center justify-center bg-black bg-opacity-98"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-opacity-98"
           style={{
             animation: "fadeIn 0.3s ease",
             backdropFilter: "blur(10px)"
